@@ -47,7 +47,7 @@ public class ConnectionManagerTestBase extends TestCase {
         cf.setInitialGraceTimeMS(1000);
 
         cf.setSubsequentNumRetries(1);
-        cf.setSubsequentGraceTimeMS(200);
+        cf.setSubsequentGraceTimeMS(201);
 
         { // Initial
             long connectTime = -System.currentTimeMillis();
