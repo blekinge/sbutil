@@ -5,3 +5,7 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
+#Setup deployment to nexus by following this guide
+#https://vzurczak.wordpress.com/2014/09/23/deploying-to-maven-repositories-from-tavis-ci/
+# Or this https://gist.github.com/neothemachine/4060735
+# or this http://www.debonair.io/post/maven-cd/
