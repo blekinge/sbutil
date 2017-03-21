@@ -19,7 +19,7 @@ pipeline {
         stage ('Build') {
             steps {
                 configFileProvider([configFile(fileId: 'sbforge-nexus', variable: 'MAVEN_SETTINGS')]) {
-                    sh 'mvn -Dmaven.test.failure.ignore=true test'
+                    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.test.failure.ignore=true test'
                 }
             }
             post {
