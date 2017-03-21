@@ -18,7 +18,9 @@ pipeline {
 
         stage ('Build') {
             steps {
-                sh 'mvn -Dmaven.test.failure.ignore=true test'
+                configFileProvider([configFile(fileId: 'sbprojects-nexus', variable: 'MAVEN_SETTINGS')]) {
+                    sh 'mvn -Dmaven.test.failure.ignore=true test'
+                }
             }
             post {
                 success {
