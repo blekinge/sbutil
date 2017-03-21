@@ -2,10 +2,6 @@
 
 pipeline {
     agent any
-    tools {
-        maven 'Maven 3.3.9'
-        jdk 'jdk8'
-    }
     stages {
         stage ('Initialize') {
             steps {
@@ -18,8 +14,8 @@ pipeline {
 
         stage ('Build') {
             steps {
-                configFileProvider([configFile(fileId: 'sbforge-nexus', variable: 'MAVEN_SETTINGS')]) {
-                    sh 'mvn -s $MAVEN_SETTINGS -Dmaven.test.failure.ignore=true test'
+                withMaven(jdk: 'jdk8', maven: 'Maven 3.3.9', mavenSettingsConfig: 'sbforge-nexus') {
+                    sh 'mvn -Dmaven.test.failure.ignore=true test'
                 }
             }
             post {
