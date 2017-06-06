@@ -11,7 +11,7 @@ pipeline {
         stage('build') {
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                    sh 'mvn "clean install -DskipTests"'
+                    sh 'mvn clean install -DskipTests'
                 }
             }
         }
