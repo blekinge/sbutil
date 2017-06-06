@@ -1,16 +1,14 @@
 #!groovy
 
 pipeline {
-    agent any
+    agent { docker 'maven:3.3.3-jdk-7' }
     stages {
         stage ('Checkout') {
-
             steps {
                 checkout scm
             }
         }
         stage('build') {
-            agent { docker 'maven:3.3.3-jdk-7' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     sh 'mvn clean install -DskipTests'
@@ -18,7 +16,6 @@ pipeline {
             }
         }
         stage('test-7') {
-            agent { docker 'maven:3.3.3-jdk-7' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     sh 'mvn test'
@@ -26,15 +23,12 @@ pipeline {
             }
         }
         stage('test-8') {
-            agent { docker 'maven:3.3.3-jdk-8' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     sh 'mvn test'
                 }
             }
         }
-
-
 
         stage('integrationtest') {
             steps {
@@ -43,8 +37,6 @@ pipeline {
         }
 
         stage('deploy') {
-            agent { docker 'maven:3.3.3-jdk-7' }
-
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     sh 'mvn install'
