@@ -4,7 +4,9 @@ pipeline {
     agent { docker 'maven:3.3.3' }
     stages {
         stage ('Checkout') {
-            checkout scm
+            steps {
+                checkout scm
+            }
         }
         stage('build') {
             steps {
@@ -22,12 +24,16 @@ pipeline {
         }
 
         stage('integrationtest') {
+            steps {
 
+            }
         }
 
         stage('deploy') {
-            withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                sh 'mvn install'
+            steps {
+                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
+                    sh 'mvn install'
+                }
             }
 
         }
