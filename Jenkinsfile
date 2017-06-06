@@ -5,7 +5,11 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'mvn'
+                withMaven(
+                        mavenSettingsConfig: 'my-settings',
+                ) {
+                    sh 'mvn'
+                }
             }
         }
     }
