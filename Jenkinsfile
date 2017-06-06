@@ -6,7 +6,7 @@ pipeline {
         stage('build') {
             steps {
                 withMaven(
-                        mavenSettingsConfig: 'my-settings',
+                        mavenSettingsConfig: 'default-settings.xml',
                 ) {
                     sh 'mvn'
                 }
