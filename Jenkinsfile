@@ -14,13 +14,12 @@ pipeline {
             steps {
                 parallel(
                         "Java7": {
-                            node('java7') {
-                                docker.image('maven:3.3.3-jdk-7').inside {
-                                    withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                                        sh 'mvn test'
-                                    }
+                            docker.image('maven:3.3.3-jdk-7').inside {
+                                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
+                                    sh 'mvn test'
                                 }
                             }
+
                         },
                         "Java8": {
                             docker.image('maven:3.3.3-jdk-8').inside {
@@ -28,6 +27,7 @@ pipeline {
                                     sh 'mvn test'
                                 }
                             }
+
                         }
                 )
             }
