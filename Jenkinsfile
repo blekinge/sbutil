@@ -1,47 +1,15 @@
-#!groovy
-
 pipeline {
-    agent none
+    agent { docker 'maven:3.3.3-jdk-7' }
     stages {
         stage('Checkout') {
-            agent any
             steps {
                 checkout scm
             }
         }
-        stage('test on java 8') {
-            agent any
-            steps {
-                parallel(
-                        "Java7": {
-                            docker.image('maven:3.3.3-jdk-7').inside {
-                                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                                    sh 'mvn test'
-                                }
-                            }
-
-                        },
-                        "Java8": {
-                            docker.image('maven:3.3.3-jdk-8').inside {
-                                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                                    sh 'mvn test'
-                                }
-                            }
-
-                        }
-                )
-            }
-            post {
-                always {
-                    junit '**/target/*.xml'
-                }
-            }
-        }
-        stage('test on java 7') {
-            agent { docker 'maven:3.3.3-jdk-7' }
+        stage('test') {
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                    sh 'mvn test'
+                    sh 'mvn clean test || true'
                 }
             }
             post {
@@ -51,7 +19,6 @@ pipeline {
             }
         }
         stage('build') {
-            agent { docker 'maven:3.3.3-jdk-7' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     sh 'mvn clean install -DskipTests'
@@ -63,16 +30,13 @@ pipeline {
             steps {
                 echo 'Integration Tests'
             }
-
         }
         stage('deploy') {
-            agent { docker 'maven:3.3.3-jdk-7' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     echo 'mvn deploy'
                 }
             }
-
         }
     }
     post {
