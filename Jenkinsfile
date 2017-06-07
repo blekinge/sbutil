@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker 'maven:3.3.3-jdk-7' }
+    agent { docker 'maven:3.5.0-jdk-7-alpine' }
     stages {
         stage('Checkout') {
             steps {
