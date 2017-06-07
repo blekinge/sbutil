@@ -1,45 +1,75 @@
 #!groovy
 
 pipeline {
-    agent { docker 'maven:3.3.3-jdk-7' }
+    agent none
     stages {
-        stage ('Checkout') {
+        stage('Checkout') {
+            agent any
             steps {
                 checkout scm
             }
         }
+        stage('test on java 8') {
+            agent any
+            steps {
+                parallel(
+                        "Java7": {
+                            node('java7') {
+                                docker.image('maven:3.3.3-jdk-7').inside {
+                                    withMaven(mavenSettingsConfig: 'sbforge-nexus') {
+                                        sh 'mvn test'
+                                    }
+                                }
+                            }
+                        },
+                        "Java8": {
+                            docker.image('maven:3.3.3-jdk-8').inside {
+                                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
+                                    sh 'mvn test'
+                                }
+                            }
+                        }
+                )
+            }
+            post {
+                always {
+                    junit '**/target/*.xml'
+                }
+            }
+        }
+        stage('test on java 7') {
+            agent { docker 'maven:3.3.3-jdk-7' }
+            steps {
+                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
+                    sh 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit '**/target/*.xml'
+                }
+            }
+        }
         stage('build') {
+            agent { docker 'maven:3.3.3-jdk-7' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
                     sh 'mvn clean install -DskipTests'
                 }
             }
         }
-        stage('test-7') {
-            steps {
-                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                    sh 'mvn test'
-                }
-            }
-        }
-        stage('test-8') {
-            steps {
-                withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                    sh 'mvn test'
-                }
-            }
-        }
-
         stage('integrationtest') {
+            agent any
             steps {
                 echo 'Integration Tests'
             }
-        }
 
+        }
         stage('deploy') {
+            agent { docker 'maven:3.3.3-jdk-7' }
             steps {
                 withMaven(mavenSettingsConfig: 'sbforge-nexus') {
-                    sh 'mvn install'
+                    echo 'mvn deploy'
                 }
             }
 
