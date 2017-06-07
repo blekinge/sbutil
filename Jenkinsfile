@@ -14,7 +14,7 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/target/*.xml'
+                    junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
@@ -26,7 +26,6 @@ pipeline {
             }
         }
         stage('integrationtest') {
-            agent any
             steps {
                 echo 'Integration Tests'
             }
